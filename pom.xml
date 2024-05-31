@@ -100,35 +100,52 @@
 				provided
 			</scope>
 		</dependency>
-		<!-- <dependency>
+		<!--
+		<dependency>
+		<groupId>
+		org.hibernate
+		</groupId>
+		<artifactId>
+		hibernate-core
+		</artifactId>
+		<version>
+		4.1.4.Final
+		</version>
+		</dependency>
+		-->
+		<!--
+		<dependency>
+		<groupId>
+		org.hibernate
+		</groupId>
+		<artifactId>
+		hibernate-entitymanager
+		</artifactId>
+		<version>
+		5.2.3.Final
+		</version>
+		</dependency>
+		-->
+		<dependency>
 			<groupId>
-				org.hibernate
+				javax
 			</groupId>
 			<artifactId>
-				hibernate-core
+				javaee-api
 			</artifactId>
 			<version>
-				4.1.4.Final
+				8.0.1
 			</version>
-		</dependency> -->
-		<!-- <dependency>
+		</dependency>
+		<dependency>
 			<groupId>
-				org.hibernate
+				org.springframework.boot
 			</groupId>
 			<artifactId>
-				hibernate-entitymanager
+				spring-boot-starter-thymeleaf
 			</artifactId>
-			<version>
-				5.2.3.Final
-			</version>
-		</dependency> -->
-	
-   <dependency>
-     <groupId>javax</groupId>
-     <artifactId>javaee-api</artifactId>
-     <version>8.0.1</version>
-   </dependency>
- </dependencies>
+		</dependency>
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
