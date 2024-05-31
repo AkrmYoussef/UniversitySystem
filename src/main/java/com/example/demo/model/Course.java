@@ -1,5 +1,10 @@
 package com.example.demo.model;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,10 +17,13 @@ public class Course {
 
     @Column(unique = true)
     private String code;
+    
     private String title;
-
+    
+    @JdbcTypeCode(SqlTypes.JSON)
     @ManyToOne
     @JoinColumn(name = "instructor_id")
+    @JsonBackReference
     private Instructor instructor;
 
     public Course() {}
