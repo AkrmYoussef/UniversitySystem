@@ -18,6 +18,7 @@ import jakarta.persistence.DiscriminatorType;
 @DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 public class User {
 
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +28,6 @@ public class User {
     private String email;
     
 
-    public User() {}
 
     public User(String name, String email) {
         this.name = name;
@@ -60,4 +60,5 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
 }

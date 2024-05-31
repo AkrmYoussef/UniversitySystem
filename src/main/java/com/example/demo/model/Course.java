@@ -1,11 +1,14 @@
 package com.example.demo.model;
 
+import jakarta.persistence.FetchType;
+
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "course")
@@ -21,7 +24,7 @@ public class Course {
     private String title;
     
     @JdbcTypeCode(SqlTypes.JSON)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instructor_id")
     @JsonBackReference
     private Instructor instructor;

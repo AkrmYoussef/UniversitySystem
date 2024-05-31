@@ -4,7 +4,11 @@ import com.example.demo.model.Course;
 import com.example.demo.model.Instructor;
 import com.example.demo.repository.InstructorRepository;
 import com.example.demo.repository.CourseRepository;
+import com.example.demo.exception.EmailAlreadyExistsException;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +21,12 @@ public class InstructorService {
     private CourseRepository courseRepository;
 
     public Instructor createInstructor(Instructor instructor) {
+       try{
         return instructorRepository.save(instructor);
+       }
+       catch(DataIntegrityViolationException e){
+           throw new EmailAlreadyExistsException("Email already exists !");
+       }
     }
 
     public Instructor addCourseToInstructor(Long instructorId, Course course) {

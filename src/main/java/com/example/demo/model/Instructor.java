@@ -27,7 +27,7 @@ public class Instructor extends User {
     private List<Course> courses;
 
      
-    public Instructor() {}
+    
 
     public Instructor(String name, String email) {
         super(name, email);

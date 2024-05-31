@@ -18,8 +18,7 @@ public class Student extends User {
     @OneToMany
     private List<Course> courses;
 
-    public Student() {}
-
+   
     public Student(String name, String email) {
         super(name, email);
         courses = new ArrayList<>();
