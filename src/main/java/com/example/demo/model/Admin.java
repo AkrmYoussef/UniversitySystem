@@ -9,8 +9,8 @@ public class Admin extends User {
     // Additional fields and methods for Admin
     
 
-    public Admin(String name, String email) {
-        super(name, email);
+    public Admin(String name, String email, String password) {
+        super(name, email, password ,"ADMIN");
     }
 
     

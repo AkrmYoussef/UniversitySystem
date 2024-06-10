@@ -29,8 +29,8 @@ public class Instructor extends User {
      
     
 
-    public Instructor(String name, String email) {
-        super(name, email);
+    public Instructor(String name, String email, String password) {
+        super(name, email, password, "INSTRUCTOR");
         courses = new ArrayList<>();
     }
 

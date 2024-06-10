@@ -19,8 +19,8 @@ public class Student extends User {
     private List<Course> courses;
 
    
-    public Student(String name, String email) {
-        super(name, email);
+    public Student(String name, String email, String password) {
+        super(name, email, password, "STUDENT");
         courses = new ArrayList<>();
     }
 
