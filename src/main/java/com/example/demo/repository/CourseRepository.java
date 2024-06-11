@@ -6,5 +6,5 @@ import com.example.demo.model.Course;
 
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
-
+  Course findById(long id);
 }

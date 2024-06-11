@@ -20,6 +20,7 @@ public class JwtService {
     .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
     .signWith(key)
     .compact();  
+    System.out.println(token);
     return token;
   }
   // Get a token from request Authorization header,
@@ -28,6 +29,7 @@ public class JwtService {
     String token = request.getHeader
         (HttpHeaders.AUTHORIZATION);
     if (token != null) {
+   
       String user = Jwts.parserBuilder()
       .setSigningKey(key)
       .build()

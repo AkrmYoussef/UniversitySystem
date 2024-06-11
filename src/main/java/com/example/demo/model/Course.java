@@ -1,12 +1,10 @@
 package com.example.demo.model;
 
-import jakarta.persistence.FetchType;
-
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
+import java.util.List;
 import jakarta.persistence.*;
 
 
@@ -22,6 +20,9 @@ public class Course {
     private String code;
     
     private String title;
+
+    @OneToMany
+    private List<CourseFile> files;
     
     @JdbcTypeCode(SqlTypes.JSON)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -68,5 +69,13 @@ public class Course {
 
     public void setInstructor(Instructor instructor) {
         this.instructor = instructor;
+    }
+
+    public List<CourseFile> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<CourseFile> files) {
+        this.files = files;
     }
 }

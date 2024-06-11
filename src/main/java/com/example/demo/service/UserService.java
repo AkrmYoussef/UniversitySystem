@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -24,6 +24,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     public UserService(UserRepository userRepository){
       this.userRepository = userRepository;
     }
@@ -32,10 +33,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
     
-    public void save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-    }
+ 
     
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
@@ -43,6 +41,10 @@ public class UserService implements UserDetailsService {
     
     public User createUser(User user) {
         try {
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setEmail(user.getEmail());
+            user.setPassword(encodedPassword);
+            user.setRole(user.getRole());
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new EmailAlreadyExistsException("Email already exists !");

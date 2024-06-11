@@ -111,4 +111,8 @@ public class FileSystemStorageService implements StorageService {
 			throw new StorageException("Could not initialize storage", e);
 		}
 	}
+
+	public Path getRootLocation() {
+		return this.rootLocation;
+}
 }
