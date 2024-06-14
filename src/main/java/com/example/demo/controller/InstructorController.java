@@ -5,9 +5,11 @@ import com.example.demo.model.Instructor;
 import com.example.demo.service.InstructorService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.demo.model.User;
 import java.util.List;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/api/instructors")
@@ -20,16 +22,25 @@ public class InstructorController {
     private UserService userService;
 
     @GetMapping
-    public List<Instructor> getAllInstructors() {
-        return userService.getAllUsers().stream()
-                          .filter(user -> user instanceof Instructor)
-                          .map(user -> (Instructor) user)
-                          .toList();
+    public List<User> getAllInstructors() {
+        return userService.getAllInstructors();
     }
 
-    @GetMapping("/{id}/getCourses")
-    public List<Course> getCoursesTeachedByInstructor(@PathVariable Long id) {
-        Instructor instructor =  (Instructor) userService.getUserById(id);
+    @GetMapping("/getLoggedInInstructorCourses")
+    public List<Course> getCoursesTeachedByInstructor() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName(); // This should be the email of the logged-in user
+
+        User currentUser = userService.findByEmail(currentUserEmail);
+        if (currentUser == null || !"INSTRUCTOR".equals(currentUser.getRole())) {
+            throw new RuntimeException("Unauthorized access: You can only access your own courses.");
+        }
+
+        Instructor instructor = instructorService.findByEmail(currentUserEmail);
+        if (instructor == null) {
+            throw new RuntimeException("Instructor not found with email " + currentUserEmail);
+        
+        }
         return instructor.getCourses();
     }
 

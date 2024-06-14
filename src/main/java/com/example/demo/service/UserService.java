@@ -6,14 +6,21 @@ import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.Set;
+
 
 @Service
 public class UserService implements UserDetailsService {
@@ -24,21 +31,35 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-    public UserService(UserRepository userRepository){
-      this.userRepository = userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    
- 
-    
+
+    public List<User> getAllInstructors() {
+        List<User> users =  this.getAllUsers();
+        List<User> instructors = new ArrayList<>();
+
+        for (User user : users) {
+            if (user.getRole().equals("INSTRUCTOR") ){
+                instructors.add(user);
+            }
+        }
+        return instructors;
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
-    
+ 
+
     public User createUser(User user) {
         try {
             String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -71,10 +92,16 @@ public class UserService implements UserDetailsService {
         UserBuilder builder = null;
         if (user.isPresent()) {
             User currentUser = user.get();
-            builder = org.springframework.security.core.userdetails.
-                      User.withUsername(username);
+            builder = org.springframework.security.core.userdetails.User.withUsername(username);
             builder.password(currentUser.getPassword());
-            builder.roles(currentUser.getRole());
+
+            String role = currentUser.getRole(); 
+            Set<GrantedAuthority> authorities = new HashSet<>();
+            authorities.add(new SimpleGrantedAuthority(role));
+
+            builder.authorities(authorities);
+            // Log the roles
+            System.out.println("User: " + username + ", Roles: " + authorities);
         } else {
             throw new UsernameNotFoundException("User not found.");
         }

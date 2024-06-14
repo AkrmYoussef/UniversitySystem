@@ -18,7 +18,10 @@ public class Student extends User {
     @OneToMany
     private List<Course> courses;
 
-   
+    public Student(){
+     super();
+     this.setRole("STUDENT");
+    }
     public Student(String name, String email, String password) {
         super(name, email, password, "STUDENT");
         courses = new ArrayList<>();

@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 //import jakarta.persistence.CascadeType;
 import java.util.List;
 
@@ -17,17 +19,20 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.ArrayList;
 
 @Entity
-
+@Table(name = "instructors")
 @DiscriminatorValue("INSTRUCTOR")
 public class Instructor extends User {
     // add a field of type List<Course> to store the courses that the instructor teaches
     @JdbcTypeCode(SqlTypes.JSON)
-    @OneToMany(mappedBy = "instructor")
+    @OneToMany
     @JsonManagedReference
     private List<Course> courses;
 
      
-    
+    public Instructor() {
+        super();
+        this.setRole("INSTRUCTOR"); 
+    }
 
     public Instructor(String name, String email, String password) {
         super(name, email, password, "INSTRUCTOR");

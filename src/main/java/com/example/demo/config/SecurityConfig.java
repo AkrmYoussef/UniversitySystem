@@ -52,7 +52,7 @@ public class SecurityConfig {
   }
 
   @Bean
-  public AuthenticationManager uthenticationManager(
+  public AuthenticationManager AuthenticationManager(
       AuthenticationConfiguration authConfig) throws Exception {
     return authConfig.getAuthenticationManager();
   }
@@ -64,18 +64,21 @@ public class SecurityConfig {
         .cors(withDefaults())
         .sessionManagement(
             (sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-        .authorizeHttpRequests((authorizeHttpRequests) -> {
-          authorizeHttpRequests
-              .requestMatchers(HttpMethod.POST, "/api/login")
-              .permitAll().anyRequest().authenticated();
-
-           //authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/api/users/createUser").permitAll();   
-        })
-
+        .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())) // Allow frames from the
+                                                                                             // same origin
+        .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+            .requestMatchers(HttpMethod.POST, "/api/login")
+            .permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/users/createUser").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/instructors/getLoggedInInstructorCourses").hasAnyRole("ADMIN", "INSTRUCTOR")
+            .requestMatchers("/api/instructors/**").hasRole("ADMIN")
+            .requestMatchers("/api/admins/**").hasRole("ADMIN")
+            .requestMatchers("/h2-console/**").permitAll()
+            .anyRequest().authenticated())
         .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(exceptionHandler));
 
+    System.out.println("Security filter chain configured");
     return http.build();
   }
 
