@@ -59,27 +59,31 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf((csrf) -> csrf.disable()).cors(withDefaults())
+        .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests.anyRequest().permitAll());
+    // http.csrf((csrf) -> csrf.disable())
+    //     .cors(withDefaults())
+    //     .sessionManagement(
+    //         (sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    //     .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())) // Allow frames from the
+    //                                                                                          // same origin
+    //     .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+    //         .requestMatchers(HttpMethod.POST, "/api/login")
+    //         .permitAll()
+    //         .requestMatchers(HttpMethod.POST, "/api/users/createUser").permitAll()
+    //         .requestMatchers(HttpMethod.GET, "/api/instructors/getLoggedInInstructorCourses").hasAnyRole("ADMIN",
+    // "INSTRUCTOR")
+    //         .requestMatchers("/api/instructors/**").hasRole("ADMIN")
+    //         .requestMatchers(HttpMethod.DELETE,"/api/courses/deleteCourse/**").hasRole("ADMIN")
+    //         .requestMatchers(HttpMethod.POST,"/api/courses/createCourse").hasRole("ADMIN")
+    //         .requestMatchers("/api/admins/**").hasRole("ADMIN")
+    //         .requestMatchers("/h2-console/**").permitAll()
+    //         .anyRequest().authenticated())
+    //     .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+    //     .exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(exceptionHandler));
 
-    http.csrf((csrf) -> csrf.disable())
-        .cors(withDefaults())
-        .sessionManagement(
-            (sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())) // Allow frames from the
-                                                                                             // same origin
-        .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-            .requestMatchers(HttpMethod.POST, "/api/login")
-            .permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/users/createUser").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/instructors/getLoggedInInstructorCourses").hasAnyRole("ADMIN", "INSTRUCTOR")
-            .requestMatchers("/api/instructors/**").hasRole("ADMIN")
-            .requestMatchers("/api/admins/**").hasRole("ADMIN")
-            .requestMatchers("/h2-console/**").permitAll()
-            .anyRequest().authenticated())
-        .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        .exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(exceptionHandler));
-
-    System.out.println("Security filter chain configured");
-    return http.build();
+    // System.out.println("Security filter chain configured");
+     return http.build();
   }
 
   @Bean

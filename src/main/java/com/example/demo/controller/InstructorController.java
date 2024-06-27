@@ -21,7 +21,7 @@ public class InstructorController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
+    @GetMapping("/getInstructors")
     public List<User> getAllInstructors() {
         return userService.getAllInstructors();
     }
@@ -59,14 +59,14 @@ public class InstructorController {
         return (Instructor) userService.updateUser(id, instructor);
     }
     
-    @PutMapping("/{instructorId}/addCourse")
-    public Instructor addCourseToInstructor(@PathVariable Long instructorId, @RequestBody Course course) {
-        return instructorService.addCourseToInstructor(instructorId, course);
+    @PutMapping("/{instructorId}/{courseId}/addCourse")
+    public Instructor addCourseToInstructor(@PathVariable Long instructorId, @PathVariable Long courseId) {
+        return instructorService.addCourseToInstructor(instructorId, courseId);
     }
 
-    @PutMapping("/{instructorId}/removeCourse")
-    public Instructor removeCourseFromInstructor(@PathVariable Long instructorId, @RequestBody Course course) {
-        return instructorService.removeCourseFromInstructor(instructorId, course);
+    @PutMapping("/{instructorId}/{courseId}/removeCourse")
+    public Instructor removeCourseFromInstructor(@PathVariable Long instructorId, @PathVariable Long courseId) {
+        return instructorService.removeCourseFromInstructor(instructorId, courseId);
     }
     
 }

@@ -32,6 +32,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header != null ) {
         
+            
             // Verify token and get user
             String user = jwtService.getAuthUser(request);
             List<String> roles = jwtService.getRolesFromToken(header);

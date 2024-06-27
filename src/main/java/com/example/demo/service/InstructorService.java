@@ -6,11 +6,8 @@ import com.example.demo.repository.InstructorRepository;
 import com.example.demo.repository.CourseRepository;
 import com.example.demo.exception.EmailAlreadyExistsException;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,22 +39,37 @@ public class InstructorService {
         }
     }
 
-    public Instructor addCourseToInstructor(Long instructorId, Course course) {
+    public Instructor addCourseToInstructor(Long instructorId, Long courseId) {
         Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
+        Course course = courseRepository.findById(courseId).orElse(null);
+        
         if (instructor != null) {
-            instructor.addCourse(course);
-            courseRepository.save(course);
+            if(course != null) {
+                instructor.getCourses().add(course);
+                course.setInstructor(instructor);
+            }
+            else {
+                throw new RuntimeException("Course not found with id " + courseId);
+            }
             return instructorRepository.save(instructor);
         }
         return null;
     }
 
-    public Instructor removeCourseFromInstructor(Long instructorId, Course course) {
+    public Instructor removeCourseFromInstructor(Long instructorId, Long courseId) {
         Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
+        Course course = courseRepository.findById(courseId).orElse(null);
+
         if (instructor != null) {
-            instructor.removeCourse(course);
+            if (course != null) {
+                instructor.getCourses().remove(course);
+                course.setInstructor(null);
+            } else {
+                throw new RuntimeException("Course not found with id " + courseId);
+            }
             return instructorRepository.save(instructor);
         }
         return null;
+
     }
 }

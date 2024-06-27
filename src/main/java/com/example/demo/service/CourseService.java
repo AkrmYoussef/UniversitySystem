@@ -4,6 +4,8 @@ import com.example.demo.model.Course;
 import com.example.demo.model.CourseFile;
 import com.example.demo.repository.CourseFileRepository;
 import com.example.demo.repository.CourseRepository;
+import com.example.demo.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,10 +27,15 @@ public class CourseService {
     @Autowired
     private FileSystemStorageService storageService;
 
+
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
 
+    public Course getCourseById(Long id) {
+        return courseRepository.findById(id).orElse(null);
+    }
+    
     public Course createCourse(Course course) {
         return courseRepository.save(course);
     }
@@ -42,6 +49,11 @@ public class CourseService {
         if (existingCourse != null) {
             existingCourse.setCode(course.getCode());
             existingCourse.setTitle(course.getTitle());
+            existingCourse.setInstructor(course.getInstructor());
+            existingCourse.setSeason(course.getSeason());
+            existingCourse.setYear(course.getYear());
+            existingCourse.setStatus(course.getStatus());
+            existingCourse.setInstructorName(course.getInstructorName());
             existingCourse.setInstructor(course.getInstructor());
             return courseRepository.save(existingCourse);
         }
@@ -120,4 +132,6 @@ public class CourseService {
     }
     
 
+
+    
 }
