@@ -4,8 +4,8 @@ export type CourseResponse = {
   title: string;
   season: string;
   year: string;
-  instructorName: string;
-  instructorId: number | null; // Add this line
+  instructorId?: number;
+  instructorName?: string;
   status: string;
 };
 

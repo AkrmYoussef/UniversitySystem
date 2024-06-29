@@ -16,7 +16,7 @@ import Snackbar from "@mui/material/Snackbar";
 import AddCourse from "./AddCourse";
 import AssignInstructor from "./AssignInstructor";
 import EditCourse from "./EditCourse";
-
+import Button from "@mui/material/Button";
 
 function ListOfCourses() {
   const [open, setOpen] = useState(false);
@@ -62,18 +62,17 @@ function ListOfCourses() {
       headerName: "Instructor",
       width: 150,
       renderCell: (params) =>
-        //add code to display instructor name if it is not null , otherwise display a button to assign instructor
+        //display instructor name if it is not null , otherwise display a button to assign instructor
         params.row.instructorName ? (
           <span>{params.row.instructorName}</span>
         ) : (
-          <button
+
+          <Button
             onClick={() => {
               setSelectedCourseId(params.row.id);
               setAssignInstructorOpen(true);
             }}
-          >
-            Assign
-          </button>
+            >Assign</Button>
         ),
     },
     {

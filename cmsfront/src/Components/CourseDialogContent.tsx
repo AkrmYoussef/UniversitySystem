@@ -1,5 +1,4 @@
 import { CourseResponse } from "../type";
-import DialogContent from "@mui/material/DialogContent";
 
 type DialogFormProps = {
   course: CourseResponse;
@@ -8,7 +7,6 @@ type DialogFormProps = {
 function CourseDialogContent({ course, handleChange }: DialogFormProps) {
   return (
     <>
-      <DialogContent>
         <input
           placeholder="Code"
           name="code"
@@ -44,7 +42,6 @@ function CourseDialogContent({ course, handleChange }: DialogFormProps) {
           onChange={handleChange}
         />
         <br />
-      </DialogContent>
     </>
   );
 }

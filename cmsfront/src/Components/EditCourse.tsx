@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { CourseResponse } from "../type";
+import { CourseResponse  } from "../type";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import CourseDialogContent from "./CourseDialogContent";
 import { updateCourse } from "../api/coursesapi";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Snackbar from "@mui/material/Snackbar";
+import Button from "@mui/material/Button";
+import DialogContent from "@mui/material/DialogContent";
+import AssignInstructorContent from "./AssignInstructorContent";
+import { getallinstructors } from "../api/instructorapi";
+ 
 
 type EditCourseProps = {
   CourseData: CourseResponse;
@@ -21,13 +26,18 @@ function EditCourse({ CourseData }: EditCourseProps) {
     code: "",
     title: "",
     season: "",
-    year: "",
+    instructorId: 0,
     instructorName: "",
-    instructorId: null,
+    year: "",
     status: "",
   });
 
   const [open, setOpen] = useState(false);
+
+  const { data} = useQuery({
+    queryKey: ["instructors"],
+    queryFn: getallinstructors,
+  });
 
   const handleClickOpen = () => {
     setCourse({
@@ -36,9 +46,9 @@ function EditCourse({ CourseData }: EditCourseProps) {
       title: CourseData.title,
       season: CourseData.season,
       year: CourseData.year,
-      instructorName: CourseData.instructorName,
-      instructorId: CourseData.instructorId, 
       status: CourseData.status,
+      instructorId: CourseData.instructorId,
+      instructorName: CourseData.instructorName,
     });
     setOpen(true);
   };
@@ -68,9 +78,9 @@ function EditCourse({ CourseData }: EditCourseProps) {
       title: "",
       year: "",
       status: "",
-      instructorName: "",
-      instructorId: null, 
       season: "",
+      instructorId: 0,
+      instructorName: "",
     });
     handleClose();
   };
@@ -81,14 +91,22 @@ function EditCourse({ CourseData }: EditCourseProps) {
 
   return (
     <>
-      <button onClick={handleClickOpen}>Edit</button>
+      <Button onClick={handleClickOpen}>Edit</Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Course</DialogTitle>
-        <CourseDialogContent course={course} handleChange={handleChange} />
-
+        <DialogContent>
+          <CourseDialogContent course={course} handleChange={handleChange} />
+          <AssignInstructorContent
+            selectedInstructor={course.instructorId || -1}
+            setSelectedInstructor={(id: number) =>
+              setCourse({ ...course, instructorId: id })
+            }
+            data={data || []}     
+          />
+        </DialogContent>
         <DialogActions>
-          <button onClick={handleClose}>Cancel</button>
-          <button onClick={handleSave}>Save</button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
       <Snackbar

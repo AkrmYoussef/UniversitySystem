@@ -2,16 +2,13 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { InstructorResponse } from "../type";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getallinstructors } from "../api/instructorapi";
 import Snackbar from "@mui/material/Snackbar";
 import Button from "@mui/material/Button";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
+import AssignInstructorContent from "./AssignInstructorContent";
+
 import { addCourseToInstructor } from "../api/instructorapi";
 
 interface AssignInstructorProps {
@@ -39,6 +36,8 @@ function AssignInstructor({
   const { mutate } = useMutation(addCourseToInstructor, {
     onSuccess: () => {
       queryClient.invalidateQueries(["courses"]);
+      setSelectedInstructor(-1);
+
       handleClose();
     },
     onError: (error) => {
@@ -68,21 +67,11 @@ function AssignInstructor({
       <DialogTitle>Assign Instructor</DialogTitle>
       <br></br>
       <DialogContent>
-        <FormControl fullWidth>
-          <br></br>
-          <InputLabel id="instructor-select-label">Instructor</InputLabel>
-          <Select
-            labelId="instructor-select-label"
-            value={selectedInstructor}
-            onChange={(e) => setSelectedInstructor(e.target.value as number)}
-          >
-            {data.map((instructor: InstructorResponse) => (
-              <MenuItem key={instructor.id} value={instructor.id}>
-                {instructor.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <AssignInstructorContent
+          selectedInstructor={selectedInstructor}
+          setSelectedInstructor={setSelectedInstructor}
+          data={data}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">

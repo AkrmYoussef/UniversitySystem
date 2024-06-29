@@ -7,6 +7,8 @@ import CourseDialogContent from "./CourseDialogContent";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import { DialogContent } from "@mui/material";
 
 function AddCourse() {
   const [open, setOpen] = useState(false);
@@ -18,7 +20,6 @@ function AddCourse() {
     title: "",
     season: "",
     year: "",
-    instructorName: "",
     status: "",
   });
 
@@ -57,7 +58,6 @@ function AddCourse() {
       title: "",
       year: "",
       status: "",
-      instructorName: "",
       season: "",
     });
     handleClose();
@@ -65,13 +65,15 @@ function AddCourse() {
 
   return (
     <>
-      <button onClick={handleClickOpen}>Add a new Course</button>
+      <Button onClick={handleClickOpen}>New Course</Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>New Course</DialogTitle>
-        <CourseDialogContent course={course} handleChange={handleChange} />
+        <DialogContent>
+          <CourseDialogContent course={course} handleChange={handleChange} />
+        </DialogContent>
         <DialogActions>
-          <button onClick={handleClose}>Cancel</button>
-          <button onClick={handleSave}>Save</button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
       <Snackbar

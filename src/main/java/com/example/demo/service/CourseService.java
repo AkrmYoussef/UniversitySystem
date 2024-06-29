@@ -37,6 +37,7 @@ public class CourseService {
     }
     
     public Course createCourse(Course course) {
+        course.setInstructorName(null);
         return courseRepository.save(course);
     }
 
@@ -46,6 +47,10 @@ public class CourseService {
 
     public Course updateCourse(Long id, Course course) {
         Course existingCourse = courseRepository.findById(id).orElse(null);
+        // print getInstructorName & getInstructor
+        System.out.println("Instructor Name: " + course.getInstructorName());
+        System.out.println("Instructor: " + course.getInstructor());
+
         if (existingCourse != null) {
             existingCourse.setCode(course.getCode());
             existingCourse.setTitle(course.getTitle());
@@ -53,8 +58,8 @@ public class CourseService {
             existingCourse.setSeason(course.getSeason());
             existingCourse.setYear(course.getYear());
             existingCourse.setStatus(course.getStatus());
-            existingCourse.setInstructorName(course.getInstructorName());
-            existingCourse.setInstructor(course.getInstructor());
+            // existingCourse.setInstructorName(course.getInstructorName());
+            // existingCourse.setInstructor(course.getInstructor());
             return courseRepository.save(existingCourse);
         }
         return null;

@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.service.InstructorService;
 
-
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/courses")
@@ -22,7 +20,6 @@ public class CourseController {
     @Autowired
     private InstructorService instructorService;
 
-  
     @GetMapping("/getCourses")
     public List<Course> getCourses() {
         return courseService.getAllCourses();
@@ -44,8 +41,10 @@ public class CourseController {
         if (course == null) {
             throw new RuntimeException("Course not found with id " + id);
         }
-        Long instructor_id = course.getInstructorId();
-        instructorService.removeCourseFromInstructor(instructor_id, id);
+        if(course.getInstructorId() != null){
+          Long instructor_id = course.getInstructorId();
+          instructorService.removeCourseFromInstructor(instructor_id, id);
+        }
         courseService.deleteCourse(id);
     }
 
@@ -64,11 +63,10 @@ public class CourseController {
         return courseService.getCourseFiles(courseId);
     }
 
-    //delete file from a certain course
+    // delete file from a certain course
     @DeleteMapping("/{courseId}/deleteFile/{fileId}")
-    public void deleteCourseFile(@PathVariable Long courseId ,@PathVariable Long fileId) {
+    public void deleteCourseFile(@PathVariable Long courseId, @PathVariable Long fileId) {
         courseService.deleteCourseFile(courseId, fileId);
     }
 
- 
 }
