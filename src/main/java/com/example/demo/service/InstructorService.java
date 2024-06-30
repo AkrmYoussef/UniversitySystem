@@ -9,13 +9,16 @@ import com.example.demo.exception.EmailAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
+
 public class InstructorService {
 
     @Autowired
     private InstructorRepository instructorRepository;
-    
+
     @Autowired
     private UserService userService;
 
@@ -40,21 +43,42 @@ public class InstructorService {
     }
 
     public Instructor addCourseToInstructor(Long instructorId, Long courseId) {
-        Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
-        Course course = courseRepository.findById(courseId).orElse(null);
-        
-        if (instructor != null) {
-            if(course != null) {
-                instructor.getCourses().add(course);
-                course.setInstructor(instructor);
+        System.out.println("Adding Course to Instructor: " + instructorId + " : " + courseId);
+
+        // Fetch the instructor and course from the database
+        Instructor instructor = instructorRepository.findById(instructorId)
+                .orElseThrow(() -> new RuntimeException("Instructor not found with id " + instructorId));
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found with id " + courseId));
+
+        if (course.getInstructor() != null) {
+            Instructor existingInstructor = course.getInstructor();
+            if (!existingInstructor.getId().equals(instructor.getId())) {
+                // Remove the course from the existing instructor
+                existingInstructor.getCourses().remove(course);
+                course.setInstructor(null);
+                course.setInstructorId(null);
+                course.setInstructorName(null);
+                instructorRepository.save(existingInstructor);
+                courseRepository.save(course); 
             }
-            else {
-                throw new RuntimeException("Course not found with id " + courseId);
-            }
-            return instructorRepository.save(instructor);
         }
-        return null;
+
+        // Associate the course with the new instructor
+        course.setInstructor(instructor);
+        course.setInstructorId(instructor.getId());
+        course.setInstructorName(instructor.getName());
+        instructor.getCourses().add(course);
+
+        // Save both the instructor and the course
+        courseRepository.save(course);
+        instructorRepository.save(instructor);
+
+        System.out.println("Course " + courseId + " assigned to Instructor " + instructorId);
+        return instructor;
     }
+
+    // write a method to update the instructor of a course
 
     public Instructor removeCourseFromInstructor(Long instructorId, Long courseId) {
         Instructor instructor = instructorRepository.findById(instructorId).orElse(null);

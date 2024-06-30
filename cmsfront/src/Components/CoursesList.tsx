@@ -22,6 +22,7 @@ function ListOfCourses() {
   const [open, setOpen] = useState(false);
   const [assignInstructorOpen, setAssignInstructorOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<number>(0);
+  
 
   const queryClient = useQueryClient();
 

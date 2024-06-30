@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { CourseResponse  } from "../type";
+import { CourseResponse } from "../type";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import CourseDialogContent from "./CourseDialogContent";
 import { updateCourse } from "../api/coursesapi";
-import {useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Snackbar from "@mui/material/Snackbar";
 import Button from "@mui/material/Button";
 import DialogContent from "@mui/material/DialogContent";
 import AssignInstructorContent from "./AssignInstructorContent";
-import { getallinstructors } from "../api/instructorapi";
- 
+import { addCourseToInstructor, getallinstructors } from "../api/instructorapi";
 
 type EditCourseProps = {
   CourseData: CourseResponse;
@@ -20,6 +19,7 @@ type EditCourseProps = {
 function EditCourse({ CourseData }: EditCourseProps) {
   const [SnackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [selectedInstructor, setSelectedInstructor] = useState(-1);
 
   const [course, setCourse] = useState<CourseResponse>({
     id: 0,
@@ -34,7 +34,7 @@ function EditCourse({ CourseData }: EditCourseProps) {
 
   const [open, setOpen] = useState(false);
 
-  const { data} = useQuery({
+  const { data } = useQuery({
     queryKey: ["instructors"],
     queryFn: getallinstructors,
   });
@@ -59,7 +59,7 @@ function EditCourse({ CourseData }: EditCourseProps) {
 
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(updateCourse, {
+  const updateCourseMutation = useMutation(updateCourse, {
     onSuccess: () => {
       setSnackBarOpen(true);
       queryClient.invalidateQueries(["courses"]);
@@ -69,9 +69,24 @@ function EditCourse({ CourseData }: EditCourseProps) {
     },
   });
 
+  const addCourseToInstructorMutation = useMutation(addCourseToInstructor, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["courses"]);
+      setSelectedInstructor(-1);
+      handleClose();
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   const handleSave = () => {
     setSnackBarMessage(`Course ${course.title} has been updated successfully`);
-    mutate(course);
+    updateCourseMutation.mutate(course);
+    addCourseToInstructorMutation.mutate({
+      instructorId: selectedInstructor,
+      courseId: course.id,
+    });
     setCourse({
       id: 0,
       code: "",
@@ -96,13 +111,13 @@ function EditCourse({ CourseData }: EditCourseProps) {
         <DialogTitle>Edit Course</DialogTitle>
         <DialogContent>
           <CourseDialogContent course={course} handleChange={handleChange} />
-          <AssignInstructorContent
-            selectedInstructor={course.instructorId || -1}
-            setSelectedInstructor={(id: number) =>
-              setCourse({ ...course, instructorId: id })
-            }
-            data={data || []}     
-          />
+          {data && (
+            <AssignInstructorContent
+              selectedInstructor={selectedInstructor}
+              setSelectedInstructor={setSelectedInstructor}
+              data={data}
+            />
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
