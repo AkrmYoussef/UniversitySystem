@@ -17,12 +17,15 @@ import AddCourse from "./AddCourse";
 import AssignInstructor from "./AssignInstructor";
 import EditCourse from "./EditCourse";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SourceIcon from "@mui/icons-material/Source";
+import Tooltip from "@mui/material/Tooltip";
 
 function ListOfCourses() {
   const [open, setOpen] = useState(false);
   const [assignInstructorOpen, setAssignInstructorOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<number>(0);
-  
 
   const queryClient = useQueryClient();
 
@@ -50,15 +53,6 @@ function ListOfCourses() {
     { field: "season", headerName: "Season", width: 150 },
     { field: "year", headerName: "Year", width: 150 },
     {
-      field: "edit",
-      headerName: "",
-      width: 90,
-      sortable: false,
-      filterable: false,
-      disableColumnMenu: true,
-      renderCell: (params: GridCellParams) => <EditCourse  CourseData={params.row}/>,
-    },
-    {
       field: "instructorName",
       headerName: "Instructor",
       width: 150,
@@ -67,13 +61,14 @@ function ListOfCourses() {
         params.row.instructorName ? (
           <span>{params.row.instructorName}</span>
         ) : (
-
           <Button
             onClick={() => {
               setSelectedCourseId(params.row.id);
               setAssignInstructorOpen(true);
             }}
-            >Assign</Button>
+          >
+            Assign
+          </Button>
         ),
     },
     {
@@ -83,32 +78,47 @@ function ListOfCourses() {
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <button color="primary" onClick={() => handleViewFiles(params.row.id)}>
-          View
-        </button>
+        <Tooltip title="View Course Files">
+          <IconButton onClick={() => handleViewFiles(params.row.id)}>
+            <SourceIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ),
+    },
+    {
+      field: "edit",
+      headerName: "",
+      width: 90,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      renderCell: (params: GridCellParams) => (
+        <EditCourse CourseData={params.row} />
       ),
     },
     {
       field: "delete",
-      headerName: "Delete Course",
+      headerName: "",
       width: 150,
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
       renderCell: (params: GridCellParams) => (
-        <button
-          onClick={() => {
-            if (
-              window.confirm(
-                `Are you sure you want to delete ${params.row.code} ${params.row.title}?`
+        <Tooltip title="Delete Course">
+          <IconButton
+            aria-label="delete"
+            size="small"
+            onClick={() => {
+              if (
+                window.confirm(`Are you sure you want to delete
+              ${params.row.brand} ${params.row.model}?`)
               )
-            ) {
-              mutate(params.row.id);
-            }
-          }}
-        >
-          Delete
-        </button>
+                mutate(params.row._links.car.href);
+            }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
       ),
     },
   ];

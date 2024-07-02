@@ -11,6 +11,9 @@ import Button from "@mui/material/Button";
 import DialogContent from "@mui/material/DialogContent";
 import AssignInstructorContent from "./AssignInstructorContent";
 import { addCourseToInstructor, getallinstructors } from "../api/instructorapi";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
+import Tooltip from "@mui/material/Tooltip";
 
 type EditCourseProps = {
   CourseData: CourseResponse;
@@ -106,11 +109,16 @@ function EditCourse({ CourseData }: EditCourseProps) {
 
   return (
     <>
-      <Button onClick={handleClickOpen}>Edit</Button>
+      <Tooltip title="Edit course">
+        <IconButton aria-label="edit" size="small" onClick={handleClickOpen}>
+          <EditIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Course</DialogTitle>
         <DialogContent>
           <CourseDialogContent course={course} handleChange={handleChange} />
+          <br></br>
           {data && (
             <AssignInstructorContent
               selectedInstructor={selectedInstructor}

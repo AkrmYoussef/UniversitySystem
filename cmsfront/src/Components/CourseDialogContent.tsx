@@ -1,4 +1,6 @@
 import { CourseResponse } from "../type";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
 
 type DialogFormProps = {
   course: CourseResponse;
@@ -7,41 +9,39 @@ type DialogFormProps = {
 function CourseDialogContent({ course, handleChange }: DialogFormProps) {
   return (
     <>
-        <input
-          placeholder="Code"
+      <Stack spacing={2} mt={1}>
+        <TextField
+          label="Code"
           name="code"
           value={course.code}
           onChange={handleChange}
         />
-        <br />
-        <input
-          placeholder="Title"
+        <TextField
+          label="Title"
           name="title"
           value={course.title}
           onChange={handleChange}
         />
-        <br />
-        <input
-          placeholder="status"
+        <TextField
+          label="status"
           name="status"
           value={course.status}
           onChange={handleChange}
         />
-        <br />
-        <input
-          placeholder="Year"
+        <TextField
+          label="Year"
           name="year"
           value={course.year}
           onChange={handleChange}
         />
-        <br />
-        <input
-          placeholder="season"
+        <TextField
+          label="season"
           name="season"
           value={course.season}
           onChange={handleChange}
         />
         <br />
+      </Stack>
     </>
   );
 }
